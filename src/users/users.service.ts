@@ -27,17 +27,24 @@ export class UserService {
       async getUsers(): Promise<User[]> {
             const users = await this.userRepository.find();
             return users;
-  }
+      }
 
-  getUserById(id: number): any {
-    const data = users.find(user => user.id === id);
-    return data;
-  }
+      async getUserById(id: number): Promise<User> {
+            const data = await this.userRepository.findOneBy({ id });
+            return data;
+      }
 
-  deleteUser(id: number): any {
-    const index = users.findIndex(user => user.id === id);
-    return users.splice(index, 1);
-  }
+      async deleteUser(id: number): Promise<any> {
+            const data = await this.userRepository.delete(id);
+            console.log('deleteUser service', data);
+            return data
+      }
+
+      async updateUser(id: number, data: UserInterface): Promise<any> {
+            const dataUpdate = await this.userRepository.update(id, data);
+            console.log(dataUpdate);
+            return dataUpdate;            
+      }
 
 
 

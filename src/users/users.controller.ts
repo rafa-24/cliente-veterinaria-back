@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Res, Put } from '@nestjs/common';
 import { UserService } from './users.service';
 import { Response } from "express";
 import { UserDto } from '../dto/user.dto';
@@ -21,16 +21,25 @@ export class UserController {
             return response;
         }
         catch (e) {
-              console.error('Ha ocurrido un error', e);
-        }
+            console.error('Ha ocurrido un error', e);
+      }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Res() res: Response) {
-    const response = this.userService.getUserById(Number(id));
-    return res.json({
-      response
-    });
+      @Get(':id')
+  async findOne(@Param('id') id: string, @Res() res: Response): Promise<any> {
+        try {
+              const response = await this.userService.getUserById(Number(id));
+              return response !== null ?
+                    res.status(200).json({
+                          message: 'Usuario obtenido con exito',
+                          response
+                    })
+                    : res.status(400).json({ message: 'Este id no existe' })
+        }
+        catch (e) {
+            console.error('Ha ocurrido un error',e);
+      }
+   
   }
 
   @Post()
@@ -51,10 +60,33 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(201)
-  deleteUser(@Param('id') id: string, @Res() res: Response) {
-    this.userService.deleteUser(Number(id));
-    return res.send('Se ha eliminado usuario');
+  async deleteUser(@Param('id') id: string, @Res() res: Response): Promise<any> {
+        try {
+              const response = await this.userService.deleteUser(Number(id));
+              return response.affected > 0 ?
+                  res.json({ message: `el usuario con id ${id} ha sido eliminado` })
+                  : res.status(400).json({ message: `el id ${id} no existe` });
+        }
+        catch (e) {
+              console.error('Ha ocurrido un error', e);
+        }
   }
+      
+      @Put(':id')
+      async updateUser(@Param('id') id: string, @Body() dataUser: UserDto, @Res() res: Response): Promise<any> {
+            try {
+                  const response = await this.userService.updateUser(Number(id), dataUser);
+                  return res.status(201).json({
+                        message: `Se ha actualizado el usuario con id ${id}`,
+                        data: response
+                  });                  
+            } catch (e) {
+                  console.error('Ha ocurrido un error', e);
+                  
+            }
+      }
+      
+      
   
   
 }
