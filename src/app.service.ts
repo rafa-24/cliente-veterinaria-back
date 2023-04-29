@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { users } from './db/db';
 import { UserInterface } from './interface/user.interface';
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "./entity/user.entity";
 
 
 @Injectable()
-export class AppService {
+export class AppService {   
 
   createUser(data: UserInterface): any {
+
     return users.push(data);
   }
 

@@ -1,5 +1,11 @@
 export class UserDto {
-      id: number
-      name: string
-      age: number
+      namePet: string;
+      
+      nameOwner: string;
+      
+      email: string;
+            
+      discharge_date: string;
+      
+      symptoms: string;
 }
